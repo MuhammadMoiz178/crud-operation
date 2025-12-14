@@ -1,10 +1,31 @@
 import React from 'react'
 
 function CreateUser() {
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [age, setAge] = useState("")
+
+   const submitHandler = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch("/api/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        age: age,
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+   }
   return (
      <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
      <div className='w-50 bg-white rounded p-3'>
-        <form>
+        <form onSubmit={submitHandler}>
             <h2>Add User</h2>
 
             <div className='mb-2'>
@@ -17,14 +38,14 @@ function CreateUser() {
             <div className='mb-2'>
                 <label htmlFor="">Email</label>
                 <input type="email" placeholder='Enter Email' className='form-control' 
-                onChange={(e)=>setemail(e.target.value)}
+                onChange={(e)=>setEmail(e.target.value)}
                 />
             </div>
-            
+
             <div className='mb-2'>
                 <label htmlFor="">Age</label>
                 <input type="text" placeholder='Enter Age' className='form-control' 
-                onChange={(e)=>setage(e.target.value)}
+                onChange={(e)=>setAge(e.target.value)}
                 />
             </div>
             <button className='btn btn-success'>Submit</button>
