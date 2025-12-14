@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useState } from 'react'
+import { useState,useRef } from 'react'
 import { Link } from 'react-router-dom'
 function Users() {
 
@@ -9,19 +9,20 @@ function Users() {
         age:20,
     }])
 
-    useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch("/api/users");
-        const data = await response.json(); // convert to JSON
-        setUsers(data); // update state
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
+  const fetchedRef = useRef(false);
 
-    fetchUsers();
-  }, []);
+useEffect(() => {
+  if (fetchedRef.current) return;
+  fetchedRef.current = true;
+
+  const fetchUsers = async () => {
+    const res = await fetch("/api/users");
+    const data = await res.json();
+    setUsers((prev) => [...prev, ...data]);
+  };
+
+  fetchUsers();
+}, []);
   return (
     <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
         <div className='w-50 bg-white rounded p-3'>
@@ -39,12 +40,12 @@ function Users() {
 
              <tbody>
                {users.map((user)=>{
-                return <tr>
+                return <tr key={user.email}>
                     <td>{user.name}</td>
                     <td>{user.email}</td>
                     <td>{user.age}</td>
                     <td>
-                        <Link to="/update" className='btn btn-success'>Update</Link>
+                        <Link to={`/update/${user._id}`} className='btn btn-success'>Update</Link>
                         <button className='btn btn-danger'>Delete</button>
                     </td>
                  </tr>
