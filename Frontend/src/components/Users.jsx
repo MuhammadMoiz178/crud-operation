@@ -1,13 +1,27 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 function Users() {
 
     const [users,setUsers] = useState([{
-        Name:"Moiz",
-        Email:"moiz@gmail.com",
-        Age:20,
+        name:"Moiz",
+        email:"moiz@gmail.com",
+        age:20,
     }])
+
+    useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("/api/users");
+        const data = await response.json(); // convert to JSON
+        setUsers(data); // update state
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
   return (
     <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
         <div className='w-50 bg-white rounded p-3'>
@@ -26,9 +40,9 @@ function Users() {
              <tbody>
                {users.map((user)=>{
                 return <tr>
-                    <td>{user.Name}</td>
-                    <td>{user.Email}</td>
-                    <td>{user.Age}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.age}</td>
                     <td>
                         <Link to="/update" className='btn btn-success'>Update</Link>
                         <button className='btn btn-danger'>Delete</button>
