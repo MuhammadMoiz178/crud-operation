@@ -1,10 +1,10 @@
-import React from 'react'
-
+import React,{useState} from 'react'
+import { useNavigate } from 'react-router-dom'
 function CreateUser() {
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [age, setAge] = useState("")
-
+    const navigate = useNavigate()
    const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -21,6 +21,7 @@ function CreateUser() {
     });
     const data = await response.json();
     console.log(data);
+    navigate('/')
    }
   return (
      <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
