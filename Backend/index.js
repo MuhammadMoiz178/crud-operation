@@ -49,20 +49,34 @@ app.get("/api/getUser/:id", async (req, res) => {
 
 app.put("/api/updateUser/:id", async (req, res) => {
   try {
-    const { id } = req.params
-    const { name, email, age } = req.body
+    const {id} = req.params
+    const {name,email,age } = req.body
 
     const user = await User.findByIdAndUpdate(
-      id,
-      { name, email, age },
-      { new: true } 
+      {_id:id},
+      {name,email,age },
+      {new: true} 
     )
 
-    res.json({ message: "User updated successfully", user })
+    res.json({ message:"User updated successfully", user })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
 })
+
+app.delete('/api/delete/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const deletedUser = await User.findByIdAndDelete(id) 
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" })
+    }
+    res.json({ message: "User deleted successfully", user: deletedUser })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
 
 app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)
