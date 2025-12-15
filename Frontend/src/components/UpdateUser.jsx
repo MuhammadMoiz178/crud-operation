@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-
+const Backend_uri=import.meta.env.BACKEND_URL
 function UpdateUser() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -12,7 +12,7 @@ function UpdateUser() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch(`/api/getUser/${id}`)
+        const res = await fetch(`${Backend_uri}/api/getUser/${id}`)
         const data = await res.json()
 
         // assuming backend returns { name, email, age }
@@ -31,7 +31,7 @@ function UpdateUser() {
     e.preventDefault()
 
     try {
-      await fetch(`/api/updateUser/${id}`, {
+      await fetch(`${Backend_uri}/api/updateUser/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

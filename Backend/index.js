@@ -2,13 +2,16 @@ import express from "express"
 import dotenv from "dotenv"
 import connectDb from "./connectDb.js"
 import { User } from "./models/Users.model.js"
-
+import cors from "cors"
 dotenv.config({ path: "./.env" })
 connectDb()
 
 const app = express()
 app.use(express.json())
-
+app.use(cors({
+  origin:process.env.FRONTEND_URL,
+  credentials:true
+}))
 
 app.post("/api/create", async (req, res) => {
   try {

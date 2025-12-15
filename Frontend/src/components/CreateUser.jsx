@@ -1,6 +1,7 @@
 import React,{useState} from 'react'
 import { useNavigate } from 'react-router-dom'
-function CreateUser() {
+const Backend_uri=import.meta.env.BACKEND_URL
+function CreateUser() { 
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [age, setAge] = useState("")
@@ -8,7 +9,7 @@ function CreateUser() {
    const submitHandler = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("/api/create", {
+    const response = await fetch(`${Backend_uri}/api/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,59 +1,70 @@
-import React, { useEffect } from 'react'
-import { useState,useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+const Backend_uri=import.meta.env.BACKEND_URL
 function Users() {
+  const [users, setUsers] = useState([])
 
-    const [users,setUsers] = useState([{
-        name:"Moiz",
-        email:"moiz@gmail.com",
-        age:20,
-    }])
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const res = await fetch(`${Backend_uri}/api/users`)
+      const data = await res.json()
+      setUsers(data)
+    }
+    fetchUsers()
+  }, [])
 
-  const fetchedRef = useRef(false);
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure?")) return
 
-useEffect(() => {
-  if (fetchedRef.current) return;
-  fetchedRef.current = true;
+    try {
+      await fetch(`${Backend_uri}/api/delete/${id}`, {
+        method: "DELETE",
+      })
 
-  const fetchUsers = async () => {
-    const res = await fetch("/api/users");
-    const data = await res.json();
-    setUsers((prev) => [...prev, ...data]);
-  };
+      setUsers((prev) => prev.filter((user) => user._id !== id))
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
-  fetchUsers();
-}, []);
   return (
     <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
-        <div className='w-50 bg-white rounded p-3'>
- 
-           <Link to="/create" className='w-50 bg-white rounded p-3'>Add+</Link>
-            <table className='table'>
-             <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Age</th>
-                    <th>Action</th>
-                </tr>
-             </thead>
+      <div className='w-50 bg-white rounded p-3'>
+        <Link to="/create" className='btn btn-primary mb-3'>Add+</Link>
 
-             <tbody>
-               {users.map((user)=>{
-                return <tr key={user.email}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.age}</td>
-                    <td>
-                        <Link to={`/update/${user._id}`} className='btn btn-success'>Update</Link>
-                        <button className='btn btn-danger'>Delete</button>
-                    </td>
-                 </tr>
-               })}
-             </tbody>
-            </table>
+        <table className='table'>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Age</th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-        </div>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user._id}>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.age}</td>
+                <td>
+                  <Link to={`/update/${user._id}`} className='btn btn-success me-2'>
+                    Update
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(user._id)}
+                    className='btn btn-danger'
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+      </div>
     </div>
   )
 }
